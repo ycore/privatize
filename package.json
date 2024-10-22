@@ -1,6 +1,7 @@
 {
   "name": "privatize",
   "version": "1.0.0",
+  "type": "module",
   "bin": {
     "privatize": "index.js"
   },
