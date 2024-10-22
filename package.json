@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "bin": {
-    "privatize": "index.js"
+    "privatize": "index.mjs"
   },
-  "main": "index.js",
+  "main": "index.mjs",
   "keywords": [
     "cloudflare",
     "private",
