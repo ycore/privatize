@@ -1,0 +1,21 @@
+{
+  "name": "privatize",
+  "version": "1.0.0",
+  "bin": {
+    "privatize": "index.js"
+  },
+  "main": "index.js",
+  "keywords": [
+    "cloudflare",
+    "private",
+    "github",
+    "deploy"
+  ],
+  "author": "Johan Meyer<ycore@outlook.com>",
+  "license": "MIT",
+  "description": "A simple package to allow the installation of private packages on cloudflare deployments",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ycore/privatize.git"
+  }
+}
