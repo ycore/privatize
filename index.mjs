@@ -20,8 +20,10 @@ import { exit } from 'node:process';
 const SSH_PATH = '~/.ssh/id_ed25519';
 
 function main() {
-  if (!import.meta.env.DEPLOYMENT_KEY) {
-    console.error('Privatize error: encoded DEPLOYMENT_KEY environment variable is not set.');
+  const deploymentKey = process.env.DEPLOYMENT_KEY;
+
+  if (!deploymentKey) {
+    console.error('Privatize error: The encoded DEPLOYMENT_KEY environment variable is not set.');
     exit(1);
   }
 
@@ -47,7 +49,7 @@ function main() {
   try {
     execSync('mkdir -p ~/.ssh && ssh-keyscan -Ht rsa github.com >> ~/.ssh/known_hosts', { stdio: 'inherit' });
     // Decode the ENV_DEPLOYMENT_KEY and save it to a file
-    execSync(`echo ${import.meta.env.DEPLOYMENT_KEY} | base64 -d > ${SSH_PATH}`, {
+    execSync(`echo ${deploymentKey} | base64 -d > ${SSH_PATH}`, {
       stdio: 'inherit',
     });
     execSync(`chmod 600 ${SSH_PATH}`, { stdio: 'inherit' });
