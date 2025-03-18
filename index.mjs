@@ -20,7 +20,8 @@ import { exit } from 'node:process';
 const SSH_PATH = '~/.ssh/id_ed25519';
 
 function main() {
-  const deploymentKey = process.env.DEPLOYMENT_KEY;
+  let deploymentKey = process.env.DEPLOYMENT_KEY;
+  if (!deploymentKey) deploymentKey = import.meta.env.DEPLOYMENT_KEY;
 
   if (!deploymentKey) {
     console.error('Privatize error: The encoded DEPLOYMENT_KEY environment variable is not set.');
