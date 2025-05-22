@@ -40,9 +40,18 @@ function main() {
     exit(0);
   }
 
-  const repositories = Object.values(packageJson.privatize).join(' ');
+  const repositories = Object.values(packageJson.privatize);
   if (!repositories || repositories.length === 0) {
     console.info('No privatize repositories found');
+    exit(0);
+  }
+
+  const existingOptionalDeps = packageJson.optionalDependencies || {};
+  const newRepositories = repositories.filter(repo => !existingOptionalDeps[repo]);
+
+  // If no repositories, either new or existing
+  if (existingOptionalDeps === 0 && newRepositories.length === 0) {
+    console.info('No privatize repositories to install');
     exit(0);
   }
 
@@ -50,9 +59,7 @@ function main() {
   try {
     execSync('mkdir -p ~/.ssh && ssh-keyscan -Ht rsa github.com >> ~/.ssh/known_hosts', { stdio: 'inherit' });
     // Decode the ENV_DEPLOYMENT_KEY and save it to a file
-    execSync(`echo ${deploymentKey} | base64 -d > ${SSH_PATH}`, {
-      stdio: 'inherit',
-    });
+    execSync(`echo ${deploymentKey} | base64 -d > ${SSH_PATH}`, { stdio: 'inherit' });
     execSync(`chmod 600 ${SSH_PATH}`, { stdio: 'inherit' });
 
     console.log('SSH environment ready for github private install.');
@@ -61,12 +68,18 @@ function main() {
     exit(1);
   }
 
+  // If no new repositories
+  if (newRepositories.length === 0) {
+    console.info('All privatize repositories already exist in optionalDependencies');
+    exit(0);
+  }
+
+  const repositoriesToInstall = newRepositories.join(' ');
+
   // Run npm install without scripts
   try {
-    console.log(`npm install ${repositories} --no-scripts --save-optional`);
-    execSync(`npm install ${repositories} --no-scripts --save-optional`, {
-      stdio: 'inherit',
-    });
+    console.log(`npm install ${repositoriesToInstall} --no-scripts --save-optional`);
+    execSync(`npm install ${repositoriesToInstall} --no-scripts --save-optional`, { stdio: 'inherit' });
     execSync(`rm -rf ${SSH_PATH}`, { stdio: 'inherit' });
     console.log('privatize install completed successfully.');
   } catch (error) {
